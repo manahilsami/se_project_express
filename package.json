@@ -1,0 +1,27 @@
+{
+  "name": "se_project_express",
+  "version": "0.1.0",
+  "description": "WTWR project using Express",
+  "keywords": [
+    "react",
+    "express"
+  ],
+  "homepage": "https://github.com/manahilsami/se_project_express#readme",
+  "bugs": {
+    "url": "https://github.com/manahilsami/se_project_express/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/manahilsami/se_project_express.git"
+  },
+  "license": "ISC",
+  "author": "Manahil Sami",
+  "type": "commonjs",
+  "main": "app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "dependencies": {
+    "express": "^5.1.0"
+  }
+}
