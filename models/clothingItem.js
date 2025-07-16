@@ -1,9 +1,10 @@
 const mongoose = require("mongoose");
+const validator = require("validator");
 
-const clothingItemSchema = new mongoose.Schema({
+const clothingItem = new mongoose.Schema({
   name: { type: String, required: true },
   weather: { type: String, enum: ["hot", "warm", "cold"], required: true },
-  imageUrl: {
+  imageURL: {
     type: String,
     required: [true, "The image URL field is required."],
     validate: {
@@ -19,7 +20,7 @@ const clothingItemSchema = new mongoose.Schema({
     required: true,
   },
   likes: {
-    type: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
+    type: [{ type: mongoose.Schema.Types.ObjectId, ref: "user" }],
     default: [],
   },
   createdAt: {
@@ -28,4 +29,4 @@ const clothingItemSchema = new mongoose.Schema({
   },
 });
 
-module.exports = mongoose.model("item", clothingItemSchema);
+module.exports = mongoose.model("clothingItem", clothingItem);
