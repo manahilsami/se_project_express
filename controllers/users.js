@@ -1,8 +1,6 @@
 const User = require("../models/user");
 const ERROR_CODES = require("../utils/errors");
 
-//GET /users
-
 const getUsers = (req, res) => {
   User.find({})
     .then((users) => {
@@ -12,11 +10,10 @@ const getUsers = (req, res) => {
       console.error(err);
       return res
         .status(ERROR_CODES.INTERNAL_SERVER_ERROR.code)
-        .send({ message: ERROR_CODES.INTERNAL_SERVER_ERROR.message }); //FIX the hard coded 500 error number!
+        .send({ message: ERROR_CODES.INTERNAL_SERVER_ERROR.message });
     });
 };
 
-//POST /users
 const createUser = (req, res) => {
   const { name, avatar } = req.body;
   User.create({ name, avatar })
@@ -27,11 +24,10 @@ const createUser = (req, res) => {
         return res
           .status(ERROR_CODES.BAD_REQUEST.code)
           .send({ message: ERROR_CODES.BAD_REQUEST.message });
-      } else {
-        return res
-          .status(ERROR_CODES.INTERNAL_SERVER_ERROR.code)
-          .send({ message: ERROR_CODES.INTERNAL_SERVER_ERROR.message });
       }
+      return res
+        .status(ERROR_CODES.INTERNAL_SERVER_ERROR.code)
+        .send({ message: ERROR_CODES.INTERNAL_SERVER_ERROR.message });
     });
 };
 
@@ -46,7 +42,8 @@ const getUser = (req, res) => {
         return res
           .status(ERROR_CODES.NOT_FOUND.code)
           .send({ message: ERROR_CODES.NOT_FOUND.message });
-      } else if (err.name === "CastError") {
+      }
+      if (err.name === "CastError") {
         return res
           .status(ERROR_CODES.BAD_REQUEST.code)
           .send({ message: ERROR_CODES.BAD_REQUEST.message });

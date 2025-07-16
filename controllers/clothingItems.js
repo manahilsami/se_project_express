@@ -1,11 +1,8 @@
 const ClothingItem = require("../models/clothingItem");
 const ERROR_CODES = require("../utils/errors");
 
-//GET /users
-
 const createItem = (req, res) => {
   const { name, weather, imageUrl } = req.body;
-  // console.log(name, avatar);
   ClothingItem.create({ name, weather, imageUrl, owner: req.user._id })
     .then((item) => res.status(ERROR_CODES.CREATED.code).send(item))
     .catch((err) => {
@@ -80,7 +77,8 @@ const deleteItem = (req, res) => {
         return res
           .status(ERROR_CODES.BAD_REQUEST.code)
           .send({ message: ERROR_CODES.BAD_REQUEST.message });
-      } else if (err.name === "DocumentNotFoundError") {
+      }
+      if (err.name === "DocumentNotFoundError") {
         return res
           .status(ERROR_CODES.NOT_FOUND.code)
           .send({ message: ERROR_CODES.NOT_FOUND.message });
@@ -94,7 +92,7 @@ const deleteItem = (req, res) => {
 const likeItem = (req, res) => {
   ClothingItem.findByIdAndUpdate(
     req.params.itemId,
-    { $addToSet: { likes: req.user._id } }, // add _id if not present
+    { $addToSet: { likes: req.user._id } },
     { new: true }
   )
     .orFail()
@@ -120,7 +118,7 @@ const likeItem = (req, res) => {
 const dislikeItem = (req, res) => {
   ClothingItem.findByIdAndUpdate(
     req.params.itemId,
-    { $pull: { likes: req.user._id } }, // remove _id from array
+    { $pull: { likes: req.user._id } },
     { new: true }
   )
     .orFail()
