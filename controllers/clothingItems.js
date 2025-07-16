@@ -80,6 +80,10 @@ const deleteItem = (req, res) => {
         return res
           .status(ERROR_CODES.BAD_REQUEST.code)
           .send({ message: ERROR_CODES.BAD_REQUEST.message });
+      } else if (err.name === "DocumentNotFoundError") {
+        return res
+          .status(ERROR_CODES.NOT_FOUND.code)
+          .send({ message: ERROR_CODES.NOT_FOUND.message });
       }
       return res
         .status(ERROR_CODES.INTERNAL_SERVER_ERROR.code)
