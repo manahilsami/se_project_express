@@ -4,9 +4,9 @@ const ERROR_CODES = require("../utils/errors");
 //GET /users
 
 const createItem = (req, res) => {
-  const { name, weather, imageURL } = req.body;
+  const { name, weather, imageUrl } = req.body;
   // console.log(name, avatar);
-  ClothingItem.create({ name, weather, imageURL, owner: req.user._id })
+  ClothingItem.create({ name, weather, imageUrl, owner: req.user._id })
     .then((item) => res.status(ERROR_CODES.CREATED.code).send(item))
     .catch((err) => {
       console.error(err);
@@ -34,10 +34,10 @@ const getItems = (req, res) => {
 
 const updateItem = (req, res) => {
   const { itemId } = req.params;
-  const { name, weather, imageURL } = req.body;
+  const { name, weather, imageUrl } = req.body;
   ClothingItem.findByIdAndUpdate(
     itemId,
-    { name, weather, imageURL },
+    { name, weather, imageUrl },
     { new: true, runValidators: true }
   )
     .orFail()
