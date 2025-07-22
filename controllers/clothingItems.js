@@ -29,36 +29,6 @@ const getItems = (req, res) => {
     });
 };
 
-const updateItem = (req, res) => {
-  const { itemId } = req.params;
-  const { name, weather, imageUrl } = req.body;
-  ClothingItem.findByIdAndUpdate(
-    itemId,
-    { name, weather, imageUrl },
-    { new: true, runValidators: true }
-  )
-    .orFail()
-    .then((item) => {
-      if (!item) {
-        return res
-          .status(ERROR_CODES.NOT_FOUND.code)
-          .send({ message: ERROR_CODES.NOT_FOUND.message });
-      }
-      return res.status(ERROR_CODES.OK.code).send(item);
-    })
-    .catch((err) => {
-      console.error(err);
-      if (err.name === "ValidationError") {
-        return res
-          .status(ERROR_CODES.BAD_REQUEST.code)
-          .send({ message: ERROR_CODES.BAD_REQUEST.message });
-      }
-      return res
-        .status(ERROR_CODES.INTERNAL_SERVER_ERROR.code)
-        .send({ message: ERROR_CODES.INTERNAL_SERVER_ERROR.message });
-    });
-};
-
 const deleteItem = (req, res) => {
   const { itemId } = req.params;
   ClothingItem.findByIdAndDelete(itemId)
@@ -143,7 +113,6 @@ const dislikeItem = (req, res) => {
 module.exports = {
   createItem,
   getItems,
-  updateItem,
   deleteItem,
   likeItem,
   dislikeItem,
