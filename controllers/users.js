@@ -1,9 +1,12 @@
 const User = require("../models/user");
 const ERROR_CODES = require("../utils/errors");
 const bcrypt = require("bcryptjs");
+const jwt = require("jsonwebtoken");
+const { JWT_SECRET } = require("../utils/config");
 
 const getUsers = (req, res) => {
-  User.find({})
+  const userId = req.user._id;
+  User.findById({ userId })
     .then((users) => {
       res.status(ERROR_CODES.OK.code).send(users);
     })
@@ -28,7 +31,11 @@ const createUser = (req, res) => {
         password: hash,
       });
     })
-    .then((user) => res.status(ERROR_CODES.CREATED.code).send(user))
+    .then((user) => {
+      const userObject = user.toObject();
+      delete userObject.password;
+      res.status(ERROR_CODES.CREATED.code).send(userObject);
+    })
     .catch((err) => {
       console.error(err);
       if (err.name === "ValidationError") {
@@ -68,6 +75,42 @@ const getCurrentUser = (req, res) => {
     });
 };
 
+const updateUser = (req, res) => {
+  const userId = req.user._id;
+  const { name, avatar } = req.body;
+  User.findByIdAndUpdate(
+    userId,
+    { name, avatar },
+    {
+      new: true,
+      runValidators: true,
+    }
+  )
+    .orFail()
+    .then((user) => res.status(ERROR_CODES.OK.code).send(user))
+    .catch((err) => {
+      console.error(err);
+      if (err.name === "ValidationError") {
+        return res
+          .status(ERROR_CODES.BAD_REQUEST.code)
+          .send({ message: ERROR_CODES.BAD_REQUEST.message });
+      }
+      if (err.name === "DocumentNotFoundError") {
+        return res
+          .status(ERROR_CODES.NOT_FOUND.code)
+          .send({ message: ERROR_CODES.NOT_FOUND.message });
+      }
+      if (err.name === "CastError") {
+        return res
+          .status(ERROR_CODES.BAD_REQUEST.code)
+          .send({ message: ERROR_CODES.BAD_REQUEST.message });
+      }
+      return res
+        .status(ERROR_CODES.INTERNAL_SERVER_ERROR.code)
+        .send({ message: ERROR_CODES.INTERNAL_SERVER_ERROR.message });
+    });
+};
+
 const loginUser = (req, res) => {
   const { email, password } = req.body;
 
@@ -89,4 +132,10 @@ const loginUser = (req, res) => {
     });
 };
 
-module.exports = { getUsers, createUser, getCurrentUser, loginUser };
+module.exports = {
+  getUsers,
+  createUser,
+  getCurrentUser,
+  updateUser,
+  loginUser,
+};

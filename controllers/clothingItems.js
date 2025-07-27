@@ -31,15 +31,18 @@ const getItems = (req, res) => {
 
 const deleteItem = (req, res) => {
   const { itemId } = req.params;
+  const currentUserId = req.user._id;
+
   ClothingItem.findByIdAndDelete(itemId)
     .orFail()
     .then((item) => {
-      if (!item) {
-        return res
-          .status(ERROR_CODES.NOT_FOUND.code)
-          .send({ message: ERROR_CODES.NOT_FOUND.message });
+      if (!item.owner.equals(currentUserId)) {
+        return res.status(403).send({ message: "Access denied" });
       }
-      return res.status(ERROR_CODES.OK.code).send({ message: "Item deleted" });
+
+      return ClothingItem.findByIdAndDelete(itemId).then((deletedItem) => {
+        res.status(ERROR_CODES.OK.code).send(deletedItem);
+      });
     })
     .catch((err) => {
       console.error(err);
