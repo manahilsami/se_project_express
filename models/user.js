@@ -15,8 +15,8 @@ const userSchema = new mongoose.Schema({
     },
   },
   email: {
-    required: true,
     type: String,
+    required: true,
     unique: true,
     validate: {
       validator(value) {
@@ -25,8 +25,7 @@ const userSchema = new mongoose.Schema({
       message: "You must enter a valid email",
     },
   },
-  password: { required: true, type: String, select: false },
-  select: false,
+  password: { type: String, required: true, select: false },
 });
 
 userSchema.statics.findUserByCredentials = function findUserByCredentials(

@@ -23,14 +23,14 @@ const createUser = (req, res) => {
 
   bcrypt
     .hash(password, 10)
-    .then((hash) => {
-      return User.create({
+    .then((hash) =>
+      User.create({
         name,
         avatar,
         email,
         password: hash,
-      });
-    })
+      })
+    )
     .then((user) => {
       const userObject = user.toObject();
       delete userObject.password;
@@ -53,7 +53,7 @@ const createUser = (req, res) => {
 };
 
 const getCurrentUser = (req, res) => {
-  const { userId } = req.user;
+  const userId = req.user._id;
   User.findById(userId)
     .orFail()
     .then((user) => res.status(200).send(user))
@@ -113,8 +113,13 @@ const updateUser = (req, res) => {
 
 const loginUser = (req, res) => {
   const { email, password } = req.body;
+  if (!email || !password) {
+    return res.status(ERROR_CODES.BAD_REQUEST.code).send({
+      message: ERROR_CODES.BAD_REQUEST.message,
+    });
+  }
 
-  return User.findUserbyCredentials(email, password)
+  return User.findUserByCredentials(email, password)
     .then((user) => {
       const token = jwt.sign({ _id: user._id }, JWT_SECRET, {
         expiresIn: "7d",
@@ -123,6 +128,11 @@ const loginUser = (req, res) => {
     })
     .catch((err) => {
       console.error(err);
+      if (err.name === "ValidationError") {
+        return res
+          .status(ERROR_CODES.BAD_REQUEST.code)
+          .send({ message: ERROR_CODES.BAD_REQUEST.message });
+      }
       if (err.message === "Incorrect email or password") {
         return res.status(401).send({ message: "Incorrect email or password" });
       }
