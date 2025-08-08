@@ -4,20 +4,6 @@ const User = require("../models/user");
 const ERROR_CODES = require("../utils/errors");
 const { JWT_SECRET } = require("../utils/config");
 
-const getUsers = (req, res) => {
-  const userId = req.user._id;
-  User.findById({ userId })
-    .then((users) => {
-      res.status(ERROR_CODES.OK.code).send(users);
-    })
-    .catch((err) => {
-      console.error(err);
-      return res
-        .status(ERROR_CODES.INTERNAL_SERVER_ERROR.code)
-        .send({ message: ERROR_CODES.INTERNAL_SERVER_ERROR.message });
-    });
-};
-
 const createUser = (req, res) => {
   const { name, avatar, email, password } = req.body;
 
@@ -44,7 +30,9 @@ const createUser = (req, res) => {
           .send({ message: ERROR_CODES.BAD_REQUEST.message });
       }
       if (err.code === 11000) {
-        return res.status(409).send({ message: "Email already exists" });
+        return res
+          .status(ERROR_CODES.CONFLICT.code)
+          .send({ message: ERROR_CODES.CONFLICT.message });
       }
       return res
         .status(ERROR_CODES.INTERNAL_SERVER_ERROR.code)
@@ -134,7 +122,9 @@ const loginUser = (req, res) => {
           .send({ message: ERROR_CODES.BAD_REQUEST.message });
       }
       if (err.message === "Incorrect email or password") {
-        return res.status(401).send({ message: "Incorrect email or password" });
+        return res
+          .status(ERROR_CODES.UNAUTHORIZED.code)
+          .send({ message: ERROR_CODES.UNAUTHORIZED.message });
       }
       return res.status(ERROR_CODES.INTERNAL_SERVER_ERROR.code).send({
         message: ERROR_CODES.INTERNAL_SERVER_ERROR.message,
@@ -143,7 +133,6 @@ const loginUser = (req, res) => {
 };
 
 module.exports = {
-  getUsers,
   createUser,
   getCurrentUser,
   updateUser,

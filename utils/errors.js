@@ -15,4 +15,16 @@ module.exports = {
   },
   CREATED: { code: 201, message: "Resource created successfully" },
   OK: { code: 200, message: "Success" },
+  FORBIDDEN: {
+    code: 403,
+    message: "You do not have permission to perform this action",
+  },
+  CONFLICT: {
+    code: 409,
+    message: "Conflict with existing resource",
+  },
+  UNAUTHORIZED: {
+    code: 401,
+    message: "You must be logged in to perform this action",
+  },
 };

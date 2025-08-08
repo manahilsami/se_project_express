@@ -37,7 +37,9 @@ const deleteItem = (req, res) => {
     .orFail()
     .then((item) => {
       if (!item.owner.equals(currentUserId)) {
-        return res.status(403).send({ message: "Access denied" });
+        return res
+          .status(ERROR_CODES.FORBIDDEN.code)
+          .send({ message: ERROR_CODES.FORBIDDEN.message });
       }
 
       return ClothingItem.findByIdAndDelete(itemId).then((deletedItem) => {
