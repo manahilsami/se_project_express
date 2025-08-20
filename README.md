@@ -86,7 +86,7 @@ npm run dev
 npx eslint .
 ```
 
-The server will run on `http://localhost:3001` by default.
+The server will run on `https://wtwrms.jumpingcrab.com` by default.
 
 ## Database Schema
 
@@ -139,3 +139,8 @@ The server will run on `http://localhost:3001` by default.
 The application connects to MongoDB at `mongodb://127.0.0.1:27017/wtwr_db` by default.
 
 Make sure MongoDB is running locally before starting the server.
+
+## FrontEnd Code
+
+Code for the frontend can be found at the following:
+https://github.com/manahilsami/se_project_react
