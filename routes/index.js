@@ -6,7 +6,7 @@ const {
   validateUserInfo,
   userLogInAuthentication,
 } = require("../middlewares/validation");
-const ERROR_CODES = require("../utils/errors");
+const { NotFoundError } = require("../utils/customErrors");
 
 const userRouter = require("./users");
 const clothingItemsRouter = require("./clothingItems");
@@ -20,10 +20,8 @@ router.use(auth);
 router.use("/users", userRouter);
 router.use("/items", clothingItemsRouter);
 
-router.use((req, res) => {
-  res
-    .status(ERROR_CODES.NOT_FOUND.code)
-    .send({ message: ERROR_CODES.NOT_FOUND.message });
+router.use((req, res, next) => {
+  next(new NotFoundError("Requested resource not found"));
 });
 
 module.exports = router;
